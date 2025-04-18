@@ -1,13 +1,14 @@
 ### ESP32/M5StackPlus based Atari 2600 classic joystick firmware
 
 ## Description
-This project help taking an already existing Atari 2600 classic joystick, and with simple connections to its PCB make it wireless (Bluetooth) controller, which then in turn can be used in platforms such as RetroPie or others.
+This project allows you to convert an existing Atari 2600 classic joystick (original or clone) into a wireless Bluetooth controller, compatible with platforms such as RetroPie, Windows (Stella), and more.
 
-In order to achieve this, one needs to already have the Atari 2600 class joystick (clone or original) which can be bought quite cheaply at commercial websites.
-For my project, I used M5StackPlus1.1, which has 5 exposed GPIO, 3 on top and 2 on the bottom.
-This is enough since the Atari joystick also has 5 connections: UP DOWN LEFT RIGHT and FIRE.
+With minimal wiring to the joystick's internal PCB, you can connect it to an ESP32-based board like the M5StackPlus1.1, which conveniently provides five exposed GPIO pins (3 on top, 2 on the bottom)—just enough for the joystick’s five signals: UP, DOWN, LEFT, RIGHT, and FIRE.
 
-The firmware exposes a `CONTROLLER_TYPE_JOYSTICK` using the `BleGamepad` library.
-This works out of the box on Windows running Stella, but on RetroPie requires some further configurations (like retroarch gamepad configuration which can be done from the UI menus).
+The firmware uses the BleGamepad library and presents itself as a `CONTROLLER_TYPE_JOYSTICK`.
+It works out of the box on Windows with Stella, while on RetroPie, some additional configuration may be needed (such as RetroArch gamepad setup through its menu).
 
-The firmware also handles Bluetooth advertisement (5 seconds press on the fire button), and some light sleep mode (after 1 minutes, configurable) that any key will wake up from.
+## Features
+* Supports all 5 Atari 2600 Joystick buttons
+* Bluetooth Advertising: Hold the FIRE button for 5 seconds to enter pairing mode.
+* Power Saving: Automatically enters light sleep mode after 1 minute of inactivity (configurable).
