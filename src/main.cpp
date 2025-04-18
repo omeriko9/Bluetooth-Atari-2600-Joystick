@@ -31,7 +31,7 @@ bool buttonPressed = false;
 unsigned long fireLeftPressedStartTime = 0;
 
 // Timings (milliseconds)
-#define DEBOUNCE_DELAY 50                   // ms - Reduce noise from button presses
+#define DEBOUNCE_DELAY 10                   // ms - Reduce noise from button presses
 #define PAIRING_MODE_HOLD_TIME 5000         // ms - Hold FIRE button for this long to enter pairing mode
 #define BATTERY_UPDATE_INTERVAL (60 * 1000) // ms - Update battery level every 1 minute
 #define RESTART_HOLD_TIME 6000              // ms
@@ -299,11 +299,12 @@ void loop()
     else if (!leftPressed && !pairingDone && held >= PAIRING_MODE_HOLD_TIME)
     {
       pairingDone = true;
+      bleBeep();
       Serial.println(">>> FIRE alone 5s → pairing mode");
       gamepad.deleteAllBonds();
       delay(100);
       gamepad.enterPairingMode();
-      bleBeep();
+      
     }
   }
   else
@@ -338,5 +339,5 @@ void loop()
     }
   }
 
-  vTaskDelay(pdMS_TO_TICKS(30)); // 10ms sleep
+  vTaskDelay(pdMS_TO_TICKS(10)); // 10ms sleep
 }
