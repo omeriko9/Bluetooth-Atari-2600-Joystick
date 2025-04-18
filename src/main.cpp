@@ -3,7 +3,7 @@
 #include <NimBLEDevice.h>
 #include <esp_sleep.h>
 #include <AXP20X.h>
-#include <M5StickCPlus.h> 
+#include <M5StickCPlus.h>
 
 AXP20X_Class axp;
 
@@ -60,6 +60,8 @@ bool isInPairingMode = false;
 unsigned long lastBatteryUpdateTime = 0;
 byte currentBatteryLevel = 100;
 bool wasConnected = false;
+static bool prevConn = false;
+
 
 float getBatteryVoltage()
 {
@@ -165,7 +167,7 @@ void bleBeep()
   for (int i = 800; i < 1400; i += 50)
   {
     M5.Beep.tone(i, 200);
-    delay(100);        
+    delay(100);
     M5.Beep.mute();
   }
 }
@@ -175,10 +177,9 @@ void wakeupBeep()
   for (int i = 600; i < 1500; i += 50)
   {
     M5.Beep.tone(i, 50);
-    delay(20);        
+    delay(20);
     M5.Beep.mute();
   }
-
 }
 
 void setup()
@@ -304,7 +305,6 @@ void loop()
       gamepad.deleteAllBonds();
       delay(100);
       gamepad.enterPairingMode();
-      
     }
   }
   else
@@ -321,7 +321,13 @@ void loop()
   bool connected = gamepad.isConnected();
   if (connected && !wasConnected)
   {
-    Serial.println("Connected!");
+    Serial.println("→ Connected (via gamepad)");
+
+    // Call this here without a callback
+    uint16_t connHandle = NimBLEDevice::getServer()->getPeerDevices()[0]; // first connected device
+    NimBLEDevice::getServer()->updateConnParams(connHandle, 6, 12, 0, 400);
+
+    prevConn = true;
     bleBeep();
   }
   wasConnected = connected;
@@ -339,5 +345,5 @@ void loop()
     }
   }
 
-  vTaskDelay(pdMS_TO_TICKS(10)); // 10ms sleep
+  vTaskDelay(pdMS_TO_TICKS(1)); // 10ms sleep
 }
